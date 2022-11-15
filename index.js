@@ -1,45 +1,64 @@
-let board = [
-    ["-", "-", "-"],
+const { timeStamp } = require("console")
 
-    ["-", "-", "-"],
+let emptyBoard = [
+    ["X", "X", "O"],
 
-    ["-", "-", "-"]
+    ["X", "O", "X"],
+
+    ["O", "X", "O"]
 ]
-let playerOne = "X"
-let playerTwo = "O"
+
+const playTicTacToe = (board) => {
+
+const map = new Map()
+map.set('1', {x:0, y:0})
+map.set('2', {x:0, y:1})
+map.set('3', {x:0, y:2})
+map.set('4', {x:1, y:0})
+map.set('5', {x:0, y:1})
+map.set('6', {x:0, y:2})
+map.set('7', {x:2, y:0})
+map.set('8', {x:0, y:1})
+map.set('9', {x:0, y:2})
+
+let temp = []
+
+for(let i = 0; i < board.length; i++) {
+    for(let j = 0; j < board[i].lenth; j++) {
+        if(board[i][j] === "X" || board[i][j] === "O") {
+            temp.push(board[i][j])
+        }
+    }
+}
+
+if(temp.length === 9) {
+    return "the game is over"
+}
 
 const readline = require("readline").createInterface({
     input: process.stdin,
     output: process.stdout,
   });
   
+
   readline.question("Where do you want to play? ", (spot) => {
     console.log("SPOT", spot)
-    const updateBoard = (spot) => {
-        if (spot === 1) {
-        board[0][0] = spot
-        } else if (spot === 2) {
-            board[0][2] = spot
-            } else if (spot === 3) {
-                board[0][3] = spot
-                } else if (spot === 4) {
-                    board[1][0] = spot
-                    } else if (spot === 5) {
-                        board[1][1] = spot
-                        } else if (spot === 6) {
-                            board[1][2] = spot
-                            } else if (spot === 7) {
-                                board[1][2] = spot
-                                } else if (spot === 8) {
-                                    board[2][0] = spot
-                                    } else if (spot === 9) {
-                                        board[2][1] = spot
-                                        }
-
-    console.log(board)};
+    if(!map.get(spot)) {
+        console.log("Hey what are you trying to do??")
+    } else {
+        const { x, y} = map.get(spot)
+        board[x][y] = 'X'
+    }
+    console.log(board);
 
     readline.close();
   });
+
+playTicTacToe(board)
+
+}
+
+playTicTacToe(emptyBoard)
 
 //    const checkRow = (row = [], ) => {
 //     if(row[0] === '-') {return false}
