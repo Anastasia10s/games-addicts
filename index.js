@@ -1,73 +1,68 @@
-const { timeStamp } = require("console")
+const readline = require("readline").createInterface({
+  input: process.stdin,
+  output: process.stdout,
+});
 
-let emptyBoard = [
-    ["X", "X", "O"],
 
-    ["X", "O", "X"],
+let board = [
+  ["X", "X", "-"],
 
-    ["O", "X", "O"]
+  ["X", "-", "X"],
+
+  ["-", "X", "O"]
 ]
 
-const playTicTacToe = (board) => {
-
 const map = new Map()
-map.set('1', {x:0, y:0})
-map.set('2', {x:0, y:1})
-map.set('3', {x:0, y:2})
-map.set('4', {x:1, y:0})
-map.set('5', {x:0, y:1})
-map.set('6', {x:0, y:2})
-map.set('7', {x:2, y:0})
-map.set('8', {x:0, y:1})
-map.set('9', {x:0, y:2})
+map.set('1', { x: 0, y: 0 })
+map.set('2', { x: 0, y: 1 })
+map.set('3', { x: 0, y: 2 })
+map.set('4', { x: 1, y: 0 })
+map.set('5', { x: 0, y: 1 })
+map.set('6', { x: 0, y: 2 })
+map.set('7', { x: 2, y: 0 })
+map.set('8', { x: 0, y: 1 })
+map.set('9', { x: 0, y: 2 })
 
-let temp = []
+let playing = true
 
-for(let i = 0; i < board.length; i++) {
-    for(let j = 0; j < board[i].lenth; j++) {
-        if(board[i][j] === "X" || board[i][j] === "O") {
-            temp.push(board[i][j])
-        }
+const checkBoard = (row) => {
+  // We need to loop over this
+  if (row[0] !== '-') {
+    const rowStringTheSame = row.every(element => element === row[0])
+    if (rowStringTheSame) {
+      return { won: true, winner: row[0] }
     }
+  }
+  return { won: false, winner: '-' }
 }
 
-if(temp.length === 9) {
-    return "the game is over"
-}
-
-const readline = require("readline").createInterface({
-    input: process.stdin,
-    output: process.stdout,
-  });
-  
-
+const play = () => {
   readline.question("Where do you want to play? ", (spot) => {
     console.log("SPOT", spot)
-    if(!map.get(spot)) {
-        console.log("Hey what are you trying to do??")
+
+    // T
+    if (!map.get(spot)) {
+      console.log("Hey what are you trying to do??")
     } else {
-        const { x, y} = map.get(spot)
-        board[x][y] = 'X'
+      // Deconstrucrt the object that is returned from map.get
+      const { x, y } = map.get(spot)
+      //access the row and column to set the value to x
+      board[x][y] = 'X'
     }
-    console.log(board);
 
-    readline.close();
+    // Show the board so I can see if it updated correctly
+    console.log(`${board[0]} \n ${board[1]} \n ${board[2]}`);
+
+
+    if (checkBoard(board[0]).won === true) {
+      console.log("Someone won")
+    }
+    //check for row 0 if x wins
+    //output the winner
+    //close the readline
+    readline.close()
+
   });
+};
 
-playTicTacToe(board)
-
-}
-
-playTicTacToe(emptyBoard)
-
-//    const checkRow = (row = [], ) => {
-//     if(row[0] === '-') {return false}
-//     return row.every(element => element === row[0])
-//    }
-//    if(checkRow(board[0])) {
-//     console.log(`${board[0][0] wins the game}`)
-//    } else {
-//     console.log("KEEP PLAYING")
-//    }
-   
-
+play()
