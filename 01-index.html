@@ -3,102 +3,153 @@
 
 <head>
     <title>Tic Tac Toe Game</title>
+    <link href="styles.css" rel="stylesheet" />
     <script>
-        const onClickSayHello = (event) => {
-            console.log("You clicked spot", event);
-            let spot = "demo";
-            document.getElementById(spot).innerHTML = "You won't see me";
-            let board = [
-                ["X", "O", "O"],
+        const PLAY_X = 'X'
+        const PLAY_O = 'O'
+        let turn = PLAY_X
 
-                ["X", "-", "X"],
+        let board = [
+            ["-", "-", "-"],
 
-                ["-", "O", "O"]
-            ]
-            const map = new Map()
-            map.set('1', { x: 0, y: 0 })
-            map.set('2', { x: 0, y: 1 })
-            map.set('3', { x: 0, y: 2 })
-            map.set('4', { x: 1, y: 0 })
-            map.set('5', { x: 1, y: 1 })
-            map.set('6', { x: 1, y: 2 })
-            map.set('7', { x: 2, y: 0 })
-            map.set('8', { x: 2, y: 1 })
-            map.set('9', { x: 2, y: 2 })
-        };
+            ["-", "-", "-"],
 
-        let playing = true
+            ["-", "-", "-"]
+        ]
 
-        const checkBoard = () => {
-            // We need to loop over this
-            for (let i = 0; i < board.length; i++) {
-                const row = board[i] /* 3 indexes of board, 1 for each row    */
-                if (row[0] !== '-'/* row[0] is the first item on the first array */) {
-                    const rowStringTheSame = row.every(element => element === row[0] /* .every returns a boolean value  */)
-                    if (rowStringTheSame) {
-                        return { won: true, winner: row[0] }
-                    }
-                }
+        let count = 0
+
+        const spotToBoard = new Map()
+
+        spotToBoard.set('1', { x: 0, y: 0 })
+        spotToBoard.set('2', { x: 0, y: 1 })
+        spotToBoard.set('3', { x: 0, y: 2 })
+        spotToBoard.set('4', { x: 1, y: 0 })
+        spotToBoard.set('5', { x: 1, y: 1 })
+        spotToBoard.set('6', { x: 1, y: 2 })
+        spotToBoard.set('7', { x: 2, y: 0 })
+        spotToBoard.set('8', { x: 2, y: 1 })
+        spotToBoard.set('9', { x: 2, y: 2 })
+
+        const updateBoard = (spot) => {
+            spot.innerHTML = turn
+            const { x, y } = spotToBoard.get(spot.id)
+            board[x][y] = turn
+            if (board[x][y] === "-") {
+
+                spotClicked.innerHTML = turn
+                board[x][y] = turn
+                spotClicked.setAttribute("disabled", true)
+
             }
-            return { won: false, winner: '-' }
-
         }
 
-        const play = () => {
-            (spot) => {
-                console.log("SPOT", spot)
-                if (!map.get(spot)) {
-                    console.log("Hey what are you trying to do??")
-                } else {
-                    // Deconstrucrt the object that is returned from map.get
-                    const { x, y } = map.get(spot)
-                    //access the row and column to set the value to x
-                    board[x][y] = 'O'
-                }
-
-                // Show the board so I can see if it updated correctly
-                console.log(`${board[0]} \n ${board[1]} \n ${board[2]}`);
-
-
-                if (checkBoard().won === true) {
-                    console.log("Someone won")
-                }
-                //check for row 0 if x wins
-                //output the winner
-                //close the readline
+        const checkForWinner = (id) => {
+            const { x, y } = spotToBoard.get(id)
+            if (board[x][0] === board[x][1] && board[x][0] === board[x][2]) {
+                return 'true'
             }
+            else if (board[0][y] === board[1][y] && board[0][y] === board[2][y]) {
+                return 'true'
+            } else if (board[0][0] === board[1][1] && board[0][0] === board[2][2]) {
+                return 'true'
+                // this is the backslash winner combo
+            } else if (board[0][2] === board[1][1] && board[0][2] === board[2][0]) {
+                return 'true'
+                // this is the forward slash winner combo
+            } else if (count === 0) {
+                return 'cat'
+                //this is checking if the game is tied
+            } else if (board[x][0] === turn && board[x][1] === turn && board[x][2] === turn && board[0][y] === turn && board[1][y] === turn && board[2][y] === turn) {
+                return 'boardFull'
+                // this is checking if the board is full
+            }
+            return 'false'
+        }
+
+        const resetGame = () => {
+            document.getElementById('1').value = '-';
+            document.getElementById("2").value = '-';
+            document.getElementById("3").value = '-';
+            document.getElementById("4").value = '-';
+            document.getElementById("5").value = '-';
+            document.getElementById("6").value = '-';
+            document.getElementById("7").value = '-';
+            document.getElementById("8").value = '-';
+            document.getElementById("9").value = '-';
+        }
+
+        const startGame = () => { }
+
+        const switchPLayers = () => { }
+        // Func Reset game (map.clear???)
+        // Func Start game 
+        // OnClick game logic the onclick handler connecting HTML 5 and JS
+
+        const onClickSpotGameLogic = (event) => {
+            const spot = event.target
+            const id = spot.id
+
+
+
+            updateBoard(spot)
+            const won = checkForWinner(id)
+
+            if (won === 'true') {
+                document.getElementById('status').innerHTML = `${turn} won the game`
+
+            } else if (won === 'cat') {
+                document.getElementById('status').innerHTML = 'You Tied!'
+            } else if (won === 'boardFull') {
+                document.getElementById('status').innerHTML = 'No one Wins...'
+            } else {
+                switchPLayers()
+            }
+            //debugger;
+
+            turn = turn === PLAY_X ? PLAY_O : PLAY_X
+            document.getElementById("playersTurn").innerHTML = turn
+
+
         };
 
-        play()
+
     </script>
 </head>
 
 <body>
-    <div id="demo" onclick="onClickSayHello(event)">
-        This is a block element
+    <div id="status">
+        Tic-Tac-Toe
     </div>
     <div>
-        <button id="1" onclick="onClickSayHello(event)">&nbsp-&nbsp</button>
-        |
-        <button id="2" onclick="onClickSayHello(event)">&nbsp-&nbsp</button>
-        |
-        <button id="3" onclick="onClickSayHello(event)">&nbsp-&nbsp</button>
+        Player's Turn <span id="playersTurn"></span>
     </div>
-    <div>
-        <button id="4" onclick="onClickSayHello(event)">&nbsp-&nbsp</button>
+    <div id="board_row_one" class="row">
+        <button class="spot" id="1" onclick="onClickSpotGameLogic(event)">&nbsp-&nbsp</button>
         |
-        <button id="5" onclick="onClickSayHello(event)">&nbsp-&nbsp</button>
+        <button class="spot" id="2" onclick="onClickSpotGameLogic(event)">&nbsp-&nbsp</button>
         |
-        <button id="6" onclick="onClickSayHello(event)">&nbsp-&nbsp</button>
+        <button class="spot" id="3" onclick="onClickSpotGameLogic(event)">&nbsp-&nbsp</button>
     </div>
-    <div>
-        <button id="7" onclick="onClickSayHello(event)">&nbsp-&nbsp</button>
+    <div id="board_row_two" class="row">
+        <button class="spot" id="4" onclick="onClickSpotGameLogic(event)">&nbsp-&nbsp</button>
         |
-        <button id="8" onclick="onClickSayHello(event)">&nbsp-&nbsp</button>
+        <button class="spot" id="5" onclick="onClickSpotGameLogic(event)">&nbsp-&nbsp</button>
         |
-        <button id="9" onclick="onClickSayHello(event)">&nbsp-&nbsp</button>
+        <button class="spot" id="6" onclick="onClickSpotGameLogic(event)">&nbsp-&nbsp</button>
+    </div>
+    <div id="board_row_three" class="row">
+        <button class="spot" id="7" onclick="onClickSpotGameLogic(event)">&nbsp-&nbsp</button>
+        |
+        <button class="spot" id="8" onclick="onClickSpotGameLogic(event)">&nbsp-&nbsp</button>
+        |
+        <button class="spot" id="9" onclick="onClickSpotGameLogic(event)">&nbsp-&nbsp</button>
 
     </div>
+    <div id="game_controls">
+        <button>Start</button>
+        <button id="reset" onclick="resetGame()">Reset</button>
+
 </body>
 
 </html>
